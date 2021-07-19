@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import { Table } from "reactstrap";
-import {useHistory, Link } from "react-router-dom";
+import { useHistory} from "react-router-dom";
 
 export default function MainPage() {
   const [apiData, setApiData] = useState(null);
@@ -13,12 +13,9 @@ export default function MainPage() {
       const dataDate = apiData.graphData.map((element) => element.date);
       const dataEquity = apiData.graphData.map((element) => element.equity);
       const preparedData = [];
-      //console.log(dataDate)
-      //console.log(dataEquity)
       for (let index = 0; index < dataDate.length; index++) {
         preparedData.push({ date: dataDate[index], value: dataEquity[index] });
       }
-      //console.log(arrayStartAt)
       return preparedData;
     } else {
       console.log("apidata null");
@@ -60,18 +57,6 @@ export default function MainPage() {
     chart.cursor.behavior = "panXY";
     chart.cursor.xAxis = dateAxis;
     chart.cursor.snapToSeries = series;
-
-    // Create vertical scrollbar and place it before the value axis
-    /*chart.scrollbarY = new am4core.Scrollbar();
-chart.scrollbarY.parent = chart.leftAxesContainer;
-chart.scrollbarY.toBack();*/
-
-    // Create a horizontal scrollbar with previe and place it underneath the date axis
-    /*chart.scrollbarX = new am4charts.XYChartScrollbar();
-chart.scrollbarX.series.push(series);
-chart.scrollbarX.parent = chart.bottomAxesContainer;*/
-
-    //dateAxis.start = 0.79;
     dateAxis.keepSelection = true;
     return <div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>;
   }
@@ -80,15 +65,15 @@ chart.scrollbarX.parent = chart.bottomAxesContainer;*/
       .then((response) => response.json())
       .then((response) => setApiData(response));
   }
-  function ChangePage(id,event){
-    localStorage.setItem('id', id);
-    history.push("/Detail"+"/"+localStorage.getItem('id'));
-    window.location.reload()
+  function ChangePage(id, event) {
+    localStorage.setItem("id", id);
+    history.push("/Detail" + "/" + localStorage.getItem("id"));
+    window.location.reload();
   }
   function crateTable() {
     if (apiData !== null) {
       return (
-        <Table striped>
+        <Table hover bordered dark>
           <thead>
             <tr>
               <th>id</th>
@@ -100,15 +85,17 @@ chart.scrollbarX.parent = chart.bottomAxesContainer;*/
           </thead>
           <tbody>
             {apiData.nodes.map((element) => (
-              
-                <tr key={element.id} onClick={ChangePage.bind(this, element.id)}>
-                  <td>{element.id}</td>
-                  <td>{element.accountId}</td>
-                  <td>{element.accountType}</td>
-                  <td>{element.displayName}</td>
-                  <td>{element.role}</td>
-                </tr>
-              
+              <tr
+                style={{ cursor: "pointer" }}
+                key={element.id}
+                onClick={ChangePage.bind(this, element.id)}
+              >
+                <td>{element.id}</td>
+                <td>{element.accountId}</td>
+                <td>{element.accountType}</td>
+                <td>{element.displayName}</td>
+                <td>{element.role}</td>
+              </tr>
             ))}
           </tbody>
         </Table>
@@ -121,7 +108,6 @@ chart.scrollbarX.parent = chart.bottomAxesContainer;*/
     chart();
     fetchData();
   }, []);
-  //console.log(apiData)
   return (
     <div>
       {chart()}
